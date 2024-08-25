@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sathvik's App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        textarea, button {
+            display: block;
+            margin-bottom: 10px;
+        }
+        #response {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sathvik's API Client</h1>
+    <textarea id="jsonInput" rows="10" cols="50" placeholder='Enter JSON data here, e.g. { "data": ["A", "C", "z"] }'></textarea>
+    <button onclick="submitData()">Submit</button>
+    <button onclick="fetchOperationCode()">Get Operation Code</button>
+    <div id="response"></div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:5000';  // URL of your Flask app
+
+        function submitData() {
+            const input = document.getElementById('jsonInput').value;
+            try {
+                const jsonData = JSON.parse(input);
+                fetch(`${API_URL}/sathvik_post`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jsonData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('response').innerText = 'Error: ' + error.message;
+                });
+            } catch (error) {
+                document.getElementById('response').innerText = 'Invalid JSON format';
+            }
+        }
+
+        function fetchOperationCode() {
+            fetch(`${API_URL}/sathvik_get`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                document.getElementById('response').innerText = 'Error: ' + error.message;
+            });
+        }
+    </script>
+</body>
+</html>
